@@ -158,61 +158,60 @@ loadWords('pa3dictionary.txt', words)
 
 
 dimension = 819
-rounds = 4
-#regular perceptron
-print('STARTING REGULAR PERCEPTRON ALGORITHM')
-finalW = []
-for i in range (0, dimension):
-    finalW.append(0)
-for i in range(0, rounds):   
-    finalW = regularPerceptron(subset, subsetLabels, finalW)
-    regularAccuracyTraining = getAccuracyRegular(subset, subsetLabels, finalW)
-    regularAccuracyTesting = getAccuracyRegular(testSubset, testSubsetLabels, finalW)
-    print('training regular error  for round ' + str(i+1) + "  " + str(regularAccuracyTraining))
-    print('testing regular error  for round ' + str(i+1) + "  " + str(regularAccuracyTesting))
+# rounds = 4
+# #regular perceptron
+# print('STARTING REGULAR PERCEPTRON ALGORITHM')
+# finalW = []
+# for i in range (0, dimension):
+#     finalW.append(0)
+# for i in range(0, rounds):   
+#     finalW = regularPerceptron(subset, subsetLabels, finalW)
+#     regularAccuracyTraining = getAccuracyRegular(subset, subsetLabels, finalW)
+#     regularAccuracyTesting = getAccuracyRegular(testSubset, testSubsetLabels, finalW)
+#     print('training regular error  for round ' + str(i+1) + "  " + str(regularAccuracyTraining))
+#     print('testing regular error  for round ' + str(i+1) + "  " + str(regularAccuracyTesting))
 
-#voted perceptron 
-print('STARTING VOTED PERCEPTRON ALGORITHM')
-votedW1 = []
-for i in range (0, dimension):
-    votedW1.append(0)
-votedOutput = []
-votedOutput.append([votedW1,1])
-for i in range(0, rounds):
-    votedPerceptron(subset, subsetLabels, votedOutput)
-    votedAccuracyTraining = getAccuracyVoted(subset, subsetLabels, votedOutput)
-    votedAccuracyTesting = getAccuracyVoted(testSubset, testSubsetLabels, votedOutput)
-    print('training voted error  for round ' + str(i+1) + "  "  + str(votedAccuracyTraining))
-    print('testing voted error  for round ' + str(i+1) + "  "  + str(votedAccuracyTesting))
+# #voted perceptron 
+# print('STARTING VOTED PERCEPTRON ALGORITHM')
+# votedW1 = []
+# for i in range (0, dimension):
+#     votedW1.append(0)
+# votedOutput = []
+# votedOutput.append([votedW1,1])
+# for i in range(0, rounds):
+#     votedPerceptron(subset, subsetLabels, votedOutput)
+#     votedAccuracyTraining = getAccuracyVoted(subset, subsetLabels, votedOutput)
+#     votedAccuracyTesting = getAccuracyVoted(testSubset, testSubsetLabels, votedOutput)
+#     print('training voted error  for round ' + str(i+1) + "  "  + str(votedAccuracyTraining))
+#     print('testing voted error  for round ' + str(i+1) + "  "  + str(votedAccuracyTesting))
 
-#average perceptron 
-print('STARTING AVERAGE PERCEPTRON ALGORITHM')
-averageW1 = []
-average = []
-for i in range (0, dimension):
-    averageW1.append(0)
-    average.append(0)
-average = numpy.array(average)
-for i in range(0, rounds):
-    result = averagePerceptron(subset, subsetLabels, averageW1, average)
-    averageW1 = result[1]
-    average = result[0]
-    if i == 2:
-        threePasses = result[0]
-    averageAccuracyTraining = getAccuracyAverage(subset, subsetLabels, result[0])
-    averageAccuracyTesting = getAccuracyAverage(testSubset, testSubsetLabels, result[0])
-    print('training average error for round ' + str(i+1) + "  " +  str(averageAccuracyTraining))
-    print('testing average error for round ' + str(i+1) + "  " +  str(averageAccuracyTesting))
+# #average perceptron 
+# print('STARTING AVERAGE PERCEPTRON ALGORITHM')
+# averageW1 = []
+# average = []
+# for i in range (0, dimension):
+#     averageW1.append(0)
+#     average.append(0)
+# average = numpy.array(average)
+# for i in range(0, rounds):
+#     result = averagePerceptron(subset, subsetLabels, averageW1, average)
+#     averageW1 = result[1]
+#     average = result[0]
+#     if i == 2:
+#         threePasses = result[0]
+#     averageAccuracyTraining = getAccuracyAverage(subset, subsetLabels, result[0])
+#     averageAccuracyTesting = getAccuracyAverage(testSubset, testSubsetLabels, result[0])
+#     print('training average error for round ' + str(i+1) + "  " +  str(averageAccuracyTraining))
+#     print('testing average error for round ' + str(i+1) + "  " +  str(averageAccuracyTesting))
 
 
-#part2
-sixWords = findSixWords(words, threePasses)
-print('smallest value' + str(sixWords[0]))
-print('greatest value' + str(sixWords[1]))
+# #part2
+# sixWords = findSixWords(words, threePasses)
+# print('smallest value' + str(sixWords[0]))
+# print('greatest value' + str(sixWords[1]))
 
 #part3
 #yer mam
-sizes = []
 onesSet = []
 onesLabels = []
 numOfOnes = separateForOneForAll(onesSet, onesLabels, trainingSet, trainingLabels, 1)
@@ -220,7 +219,6 @@ oneVsAllW = []
 for i in range (0, dimension):
     oneVsAllW.append(0)
 oneVsAll = regularPerceptron(onesSet, onesLabels, oneVsAllW)
-sizes.append(numOfOnes)
 
 twosSet = []
 twosLabels = []
@@ -229,7 +227,6 @@ twoVsAllW = []
 for i in range (0, dimension):
     twoVsAllW.append(0)
 twoVsAll = regularPerceptron(twosSet, twosLabels, twoVsAllW)
-sizes.append(numOfTwos)
 
 threesSet = []
 threesLabels = []
@@ -238,7 +235,6 @@ threeVsAllW = []
 for i in range (0, dimension):
     threeVsAllW.append(0)
 threeVsAll = regularPerceptron(threesSet, threesLabels, threeVsAllW)
-sizes.append(numOfThrees)
 
 foursSet = []
 foursLabels = []
@@ -247,7 +243,6 @@ fourVsAllW = []
 for i in range (0, dimension):
     fourVsAllW.append(0)
 fourVsAll = regularPerceptron(foursSet, foursLabels, fourVsAllW)
-sizes.append(numOfFours)
 
 fivesSet = []
 fivesLabels = []
@@ -256,7 +251,6 @@ fiveVsAllW = []
 for i in range (0, dimension):
     fiveVsAllW.append(0)
 fiveVsAll = regularPerceptron(fivesSet, fivesLabels, fiveVsAllW)
-sizes.append(numOfFives)
 
 sixsSet = []
 sixsLabels = []
@@ -265,7 +259,6 @@ sixVsAllW = []
 for i in range (0, dimension):
     sixVsAllW.append(0)
 sixVsAll = regularPerceptron(sixsSet, sixsLabels, sixVsAllW)
-sizes.append(numOfSixs)
 
 confusionMatrix = [[0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0]]
 for item in testSet:
@@ -279,23 +272,35 @@ for item in testSet:
     predictions.append(numpy.sign(numpy.dot(sixVsAll, numpy.array(item))))
 
     moreThanOne = 0
+    print(predictions)
     for i in predictions:
         if int(i) == 1:
             moreThanOne += 1
         if int(i) == 0: 
             moreThanOne += randint(0,1)
 
+        print(moreThanOne)
+
+        if moreThanOne == 1:
+            print(predictions.index(i))
+            confusionMatrix[predictions.index(i)][actualLabelIndex] += 1
+            break
+
     #prediction is don't know
-    if moreThanOne == 1 :
-        confusionMatrix[predictions.index(1)][actualLabelIndex] += 1
-    else : 
+    if moreThanOne == 0 :
         confusionMatrix[6][actualLabelIndex] += 1
-    
+
+sizes = [0,0,0,0,0,0]
+for label in testLabels:
+    sizes[int(label)-1] += 1
+print(sizes)
+
 for column in range(0,6):   
     for row in range(0, 7):
         confusionMatrix[row][column] = float(confusionMatrix[row][column])/float(sizes[column])
 
-print(confusionMatrix)
+for row in confusionMatrix:
+    print(row)
 
 
     
