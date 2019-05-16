@@ -15,6 +15,16 @@ def loadData(fileName, features=[], labels=[]):
         features.append(currentLine)
         labels.append(line[len(line)-1])
 
+def loadWords(fileName, words=[]):
+    fileOpen = open(fileName, "r")
+    lines = fileOpen.readlines()
+    fileOpen.close()
+    for unFormattedLine in lines:
+        line = unFormattedLine.split()
+        currentLine = []
+        for feature in line:
+            words.append(str(feature))
+
 def regularPerceptron(trainingSet, trainingLabels, w1):
     for i in range(len(trainingSet)):
         dotProduct = numpy.dot(numpy.array(trainingSet[i]), w1)
@@ -38,16 +48,16 @@ def averagePerceptron(trainingSet, trainingLabels, w1, totalSum):
             totalSum = numpy.add(totalSum, w1)
         else: 
             totalSum = numpy.add(totalSum, w1)
-    return totalSum
+    return [totalSum, w1]
 
 
-def getLabelsOneAndTwo(subset, subsetLabels, trainingSet, trainingLabels):
+def separateForOneForAll(subset, subsetLabels, trainingSet, trainingLabels, one):
     for i in range(len(trainingLabels)):
         label = trainingLabels[i]
-        if int(label) == 1: 
+        if int(label) == int(one): 
             subsetLabels.append(1)
             subset.append(trainingSet[i])
-        elif int(label) == 2:
+        else :
             subsetLabels.append(-1)
             subset.append(trainingSet[i])
 
@@ -96,6 +106,24 @@ def getAccuracyAverage(testSet, testLabels, classifier):
             
 
     return float(1) - float(numWrong)/float(len(testSet))
+
+def findSixWords(words, w):
+    copy = []
+    for item in w: 
+        copy.append(item)
+
+    worstThree = []
+    bestThree = []
+
+    copy = sorted(copy)
+    for i in copy[:3]:
+        worstThree.append(words[w.tolist().index(i)])
+    
+    for i in copy[-3:]:
+        bestThree.append(words[w.tolist().index(i)])
+
+    return [worstThree, bestThree]
+
 #main 
 trainingSet = []
 trainingLabels = []
@@ -112,18 +140,26 @@ testSubsetLabels= []
 getLabelsOneAndTwo(subset, subsetLabels, trainingSet, trainingLabels)
 getLabelsOneAndTwo(testSubset, testSubsetLabels, testSet, testLabels)
 
+words = []
+loadWords('pa3dictionary.txt', words)
+
+
 dimension = 819
-rounds = 2
+rounds = 4
 #regular perceptron
+print('STARTING REGULAR PERCEPTRON ALGORITHM')
 finalW = []
 for i in range (0, dimension):
     finalW.append(0)
 for i in range(0, rounds):   
     finalW = regularPerceptron(subset, subsetLabels, finalW)
-regularAccuracy = getAccuracyRegular(subset, subsetLabels, finalW)
-print('regular error : ' + str(regularAccuracy))
+    regularAccuracyTraining = getAccuracyRegular(subset, subsetLabels, finalW)
+    regularAccuracyTesting = getAccuracyRegular(testSubset, testSubsetLabels, finalW)
+    print('training regular error  for round ' + str(i+1) + "  " + str(regularAccuracyTraining))
+    print('testing regular error  for round ' + str(i+1) + "  " + str(regularAccuracyTesting))
 
 #voted perceptron 
+print('STARTING VOTED PERCEPTRON ALGORITHM')
 votedW1 = []
 for i in range (0, dimension):
     votedW1.append(0)
@@ -131,10 +167,13 @@ votedOutput = []
 votedOutput.append([votedW1,1])
 for i in range(0, rounds):
     votedPerceptron(subset, subsetLabels, votedOutput)
-votedAccuracy = getAccuracyVoted(subset, subsetLabels, votedOutput)
-print('voted error '  + str(votedAccuracy))
+    votedAccuracyTraining = getAccuracyVoted(subset, subsetLabels, votedOutput)
+    votedAccuracyTesting = getAccuracyVoted(testSubset, testSubsetLabels, votedOutput)
+    print('training voted error  for round ' + str(i+1) + "  "  + str(votedAccuracyTraining))
+    print('testing voted error  for round ' + str(i+1) + "  "  + str(votedAccuracyTesting))
 
 #average perceptron 
+print('STARTING AVERAGE PERCEPTRON ALGORITHM')
 averageW1 = []
 average = []
 for i in range (0, dimension):
@@ -142,6 +181,25 @@ for i in range (0, dimension):
     average.append(0)
 average = numpy.array(average)
 for i in range(0, rounds):
-    average = averagePerceptron(subset, subsetLabels, averageW1, average)
-    averageAccuracy = getAccuracyAverage(subset, subsetLabels, average)
-    print('average error ' + str(averageAccuracy))
+    result = averagePerceptron(subset, subsetLabels, averageW1, average)
+    averageW1 = result[1]
+    average = result[0]
+    if i == 2:
+        threePasses = result[0]
+    averageAccuracyTraining = getAccuracyAverage(subset, subsetLabels, result[0])
+    averageAccuracyTesting = getAccuracyAverage(testSubset, testSubsetLabels, result[0])
+    print('training average error for round ' + str(i+1) + "  " +  str(averageAccuracyTraining))
+    print('testing average error for round ' + str(i+1) + "  " +  str(averageAccuracyTesting))
+
+
+#part2
+sixWords = findSixWords(words, threePasses)
+print('smallest value' + str(sixWords[0]))
+print('greatest value' + str(sixWords[1]))
+
+#part3
+#yer mam
+onesSet = []
+onesLabels = []
+SeparateForOneForAll(onesSet, onesLabels, trainingSet, trainingLabels, 1)
+
