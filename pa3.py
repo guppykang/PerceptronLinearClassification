@@ -50,16 +50,28 @@ def averagePerceptron(trainingSet, trainingLabels, w1, totalSum):
             totalSum = numpy.add(totalSum, w1)
     return [totalSum, w1]
 
+def getLabelsOneAndTwo(subset, subsetLabels, trainingSet, trainingLabels):
+     for i in range(len(trainingLabels)):
+         label = trainingLabels[i]
+         if int(label) == 1: 
+             subsetLabels.append(1)
+             subset.append(trainingSet[i])
+         elif int(label) == 2:
+             subsetLabels.append(-1)
+             subset.append(trainingSet[i])
 
 def separateForOneForAll(subset, subsetLabels, trainingSet, trainingLabels, one):
+    count = 0
     for i in range(len(trainingLabels)):
         label = trainingLabels[i]
         if int(label) == int(one): 
+            count += 1
             subsetLabels.append(1)
             subset.append(trainingSet[i])
         else :
             subsetLabels.append(-1)
             subset.append(trainingSet[i])
+    return count
 
 def getAccuracyRegular(testSet, testLabels, classifier):
     numWrong = 0
@@ -130,6 +142,7 @@ trainingLabels = []
 testSet = []
 testLabels= []
 loadData('pa3train.txt', trainingSet, trainingLabels)
+#if using practice, change dimension to 2
 #loadData('practice.txt', trainingSet, trainingLabels)
 loadData('pa3test.txt', testSet, testLabels)
 
@@ -199,7 +212,93 @@ print('greatest value' + str(sixWords[1]))
 
 #part3
 #yer mam
+sizes = []
 onesSet = []
 onesLabels = []
-SeparateForOneForAll(onesSet, onesLabels, trainingSet, trainingLabels, 1)
+numOfOnes = separateForOneForAll(onesSet, onesLabels, trainingSet, trainingLabels, 1)
+oneVsAllW = []
+for i in range (0, dimension):
+    oneVsAllW.append(0)
+oneVsAll = regularPerceptron(onesSet, onesLabels, oneVsAllW)
+sizes.append(numOfOnes)
+
+twosSet = []
+twosLabels = []
+numOfTwos = separateForOneForAll(twosSet, twosLabels, trainingSet, trainingLabels, 2)
+twoVsAllW = []
+for i in range (0, dimension):
+    twoVsAllW.append(0)
+twoVsAll = regularPerceptron(twosSet, twosLabels, twoVsAllW)
+sizes.append(numOfTwos)
+
+threesSet = []
+threesLabels = []
+numOfThrees = separateForOneForAll(threesSet, threesLabels, trainingSet, trainingLabels, 3)
+threeVsAllW = []
+for i in range (0, dimension):
+    threeVsAllW.append(0)
+threeVsAll = regularPerceptron(threesSet, threesLabels, threeVsAllW)
+sizes.append(numOfThrees)
+
+foursSet = []
+foursLabels = []
+numOfFours = separateForOneForAll(foursSet, foursLabels, trainingSet, trainingLabels, 4)
+fourVsAllW = []
+for i in range (0, dimension):
+    fourVsAllW.append(0)
+fourVsAll = regularPerceptron(foursSet, foursLabels, fourVsAllW)
+sizes.append(numOfFours)
+
+fivesSet = []
+fivesLabels = []
+numOfFives = separateForOneForAll(fivesSet, fivesLabels, trainingSet, trainingLabels, 5)
+fiveVsAllW = []
+for i in range (0, dimension):
+    fiveVsAllW.append(0)
+fiveVsAll = regularPerceptron(fivesSet, fivesLabels, fiveVsAllW)
+sizes.append(numOfFives)
+
+sixsSet = []
+sixsLabels = []
+numOfSixs = separateForOneForAll(sixsSet, sixsLabels, trainingSet, trainingLabels, 6)
+sixVsAllW = []
+for i in range (0, dimension):
+    sixVsAllW.append(0)
+sixVsAll = regularPerceptron(sixsSet, sixsLabels, sixVsAllW)
+sizes.append(numOfSixs)
+
+confusionMatrix = [[0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0], [0,0,0,0,0,0]]
+for item in testSet:
+    actualLabelIndex = int(testLabels[testSet.index(item)]) - 1
+    predictions = []
+    predictions.append(numpy.sign(numpy.dot(oneVsAll, numpy.array(item))))
+    predictions.append(numpy.sign(numpy.dot(twoVsAll, numpy.array(item))))
+    predictions.append(numpy.sign(numpy.dot(threeVsAll, numpy.array(item))))
+    predictions.append(numpy.sign(numpy.dot(fourVsAll, numpy.array(item))))
+    predictions.append(numpy.sign(numpy.dot(fiveVsAll, numpy.array(item))))
+    predictions.append(numpy.sign(numpy.dot(sixVsAll, numpy.array(item))))
+
+    moreThanOne = 0
+    for i in predictions:
+        if int(i) == 1:
+            moreThanOne += 1
+        if int(i) == 0: 
+            moreThanOne += randint(0,1)
+
+    #prediction is don't know
+    if moreThanOne == 1 :
+        confusionMatrix[predictions.index(1)][actualLabelIndex] += 1
+    else : 
+        confusionMatrix[6][actualLabelIndex] += 1
+    
+for column in range(0,6):   
+    for row in range(0, 7):
+        confusionMatrix[row][column] = float(confusionMatrix[row][column])/float(sizes[column])
+
+print(confusionMatrix)
+
+
+    
+
+
 
